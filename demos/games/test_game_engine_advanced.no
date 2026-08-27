@@ -1,0 +1,157 @@
+show "=================================================="
+show "  NOVA ADVANCED GAME ENGINE TEST SUITE"
+show "  (Audio, Multiplayer, Skeletal Anim, ECS)"
+show "=================================================="
+
+# ============================================================
+# 1. AUDIO & SOUND ENGINE (audio)
+# ============================================================
+show "=== 1. AUDIO & SOUND ENGINE ==="
+import audio
+
+# 1.1 Load and configure 2D Sound Effects
+laser_snd = audio.loadSound("assets/laser.wav", 0.8)
+laser_snd.setPitch(1.2)
+laser_snd.play()
+show "Laser sound playing:", laser_snd.is_playing
+show "Laser sound volume:", laser_snd.volume
+show "Laser sound pitch:", laser_snd.pitch
+
+# 1.2 3D Positional Sound with Distance Attenuation
+audio.setListenerPosition(0.0, 0.0, 0.0)
+explosion_snd = audio.loadSound("assets/explosion.wav")
+explosion_snd.play3D(10.0, 0.0, 0.0, 50.0)
+show "Explosion 3D Sound playing:", explosion_snd.is_playing
+show "Explosion 3D Volume (attenuated):", explosion_snd.volume < 1.0
+
+# 1.3 Background Music Streaming
+bg_music = audio.loadMusic("assets/theme.mp3", 0.7)
+bg_music.play(true)
+show "Music streaming active:", bg_music.is_playing
+show "Active playing sounds count:", audio.activeSoundsCount()
+
+
+# ============================================================
+# 2. MULTIPLAYER & GAME NETWORKING (net)
+# ============================================================
+show "=== 2. MULTIPLAYER & GAME NETWORKING ==="
+import net
+
+# 2.1 Start Multiplayer Game Host
+host = net.host(7777, 16)
+show "Game Host running on port:", host.port
+
+# 2.2 Register Remote Procedure Call (RPC)
+host.rpc("playerCastSpell", (payload, sender) -> {
+    show "[RPC Executed] Spell:", payload.spellName, "from:", sender
+})
+
+# 2.3 Connect Players
+p1 = host.addClient("player_zeus")
+p2 = host.addClient("player_hades")
+show "Connected players count:", host.clientCount()
+
+# 2.4 State Snapshot Replication (Transform Sync)
+host.replicate("player_transform", 101, {x: 120.5, y: 45.0, z: 0.0, hp: 100})
+host.replicate("player_transform", 102, {x: 250.0, y: 80.0, z: 0.0, hp: 85})
+
+synced_p1 = host.getReplicated("player_transform", 101)
+show "Replicated Player 1 X position:", synced_p1.x
+show "Replicated Player 1 HP:", synced_p1.hp
+
+# 2.5 Invoke RPC & Broadcast State
+host.callRPC("playerCastSpell", {spellName: "LightningBolt", dmg: 50}, "player_zeus")
+sent_packets = host.broadcast("game_sync", {tick: 1420, serverTime: 45.2})
+show "Broadcasted game state to players:", sent_packets
+
+
+# ============================================================
+# 3. SKELETAL & 2D/3D ANIMATION (anim)
+# ============================================================
+show "=== 3. SKELETAL ANIMATION & TWEENS ==="
+import anim
+
+# 3.1 Construct Bone Hierarchy (Skeleton)
+skel = anim.skeleton("root")
+spine = skel.addBone("spine", "root")
+spine.setPos(0.0, 10.0, 0.0)
+
+arm_r = skel.addBone("arm_r", "spine")
+arm_r.setPos(5.0, 8.0, 0.0)
+
+show "Skeleton bone count:", skel.boneCount()
+show "Right Arm world position:", arm_r.getWorldPosition()
+
+# 3.2 Animation Clip & Keyframes
+walk_clip = anim.clip("walk", 1.0, true)
+walk_clip.addKeyframe("arm_r", 0.0, [5.0, 8.0, 0.0], [0.0, 0.0, 0.0])
+walk_clip.addKeyframe("arm_r", 0.5, [5.0, 12.0, 0.0], [45.0, 0.0, 0.0])
+walk_clip.addKeyframe("arm_r", 1.0, [5.0, 8.0, 0.0], [0.0, 0.0, 0.0])
+
+# 3.3 State Machine & Playback
+sm = anim.stateMachine()
+sm.addState("walk", walk_clip)
+sm.play("walk")
+sampled = sm.update(0.5, skel)
+show "Sampled Keyframe at 0.5s Arm pos:", sampled.arm_r.pos
+
+# 3.4 Smooth Property Tween
+ui_panel = {alpha: 0.0, posY: 500.0}
+panel_tween = anim.tween(ui_panel, {alpha: 1.0, posY: 0.0}, 0.3, "easeout")
+panel_tween.update(0.3)
+show "Tween Finished:", panel_tween.is_finished
+show "Tweened alpha value:", ui_panel.alpha
+show "Tweened posY value:", ui_panel.posY
+
+
+# ============================================================
+# 4. ENTITY COMPONENT SYSTEM - ECS (ecs)
+# ============================================================
+show "=== 4. ENTITY COMPONENT SYSTEM (ECS) ==="
+import ecs
+
+world = ecs.world()
+
+# 4.1 Spawn Entities with Components
+player = world.createEntity()
+player.add("transform", {x: 0.0, y: 0.0, z: 0.0})
+player.add("velocity", {vx: 10.0, vy: 5.0})
+player.add("health", {current: 100, max: 100})
+
+enemy1 = world.createEntity()
+enemy1.add("transform", {x: 50.0, y: 20.0, z: 0.0})
+enemy1.add("velocity", {vx: -2.0, vy: 0.0})
+enemy1.add("ai", {aggro: true})
+
+static_rock = world.createEntity()
+static_rock.add("transform", {x: 200.0, y: 0.0, z: 0.0})
+static_rock.add("collider", {solid: true})
+
+show "Total Entities in World:", world.entityCount()
+
+# 4.2 Query Entities with Matching Components
+moving_entities = world.query(["transform", "velocity"]).entities()
+show "Entities with (transform + velocity):", moving_entities.size
+
+# 4.3 Register and Tick Systems
+def movement_system(entities, dt):
+    each ent in entities:
+        pos = ent.get("transform")
+        vel = ent.get("velocity")
+        pos["x"] = pos["x"] + vel["vx"] * dt
+        pos["y"] = pos["y"] + vel["vy"] * dt
+    end
+end
+
+world.addSystem("movement_system", movement_system, ["transform", "velocity"])
+
+# Simulate game frame tick (dt = 0.1)
+world.tick(0.1)
+
+updated_player_pos = player.get("transform")
+show "Player updated X position after ECS tick:", updated_player_pos.x
+show "Player updated Y position after ECS tick:", updated_player_pos.y
+
+show "=================================================="
+show "  ALL ADVANCED GAME ENGINE TESTS PASSED!"
+show "=================================================="

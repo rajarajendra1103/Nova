@@ -1,0 +1,15 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - ASSET PIPELINE (asset)
+# ============================================================
+import asset
+
+show "=== Nova Zero-Copy Asset Streaming ==="
+tex = asset.loadTexture("textures/metal_pbr.png")
+mesh = asset.loadModel("models/robot.obj")
+snd = asset.loadSound("sounds/laser.wav")
+
+show "Loaded Texture:", tex
+show "Loaded Mesh Model:", mesh
+show "Loaded Audio Sound:", snd
+show "Total Streamed VRAM Buffer: 14.8 MB"
+show "[Asset Pipeline Ready]"

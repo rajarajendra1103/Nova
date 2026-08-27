@@ -1,0 +1,12 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - CHARTING ENGINE (chart)
+# ============================================================
+import chart
+
+show "=== Nova Native Data Visualization (chart) ==="
+fig = chart.line([10.0, 25.0, 45.0, 30.0, 65.0, 80.0, 95.0])
+fig.title("Nova Performance Benchmarks")
+
+show "Chart Type: High-Speed Line Plot (7 Data Points)"
+show "Title: Nova Performance Benchmarks"
+show "Summary: Min=10.0, Max=95.0, Mean=50.0"

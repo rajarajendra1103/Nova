@@ -1,0 +1,15 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - ANIMATION ENGINE (anim)
+# ============================================================
+import anim
+
+show "=== Nova High-Performance Animation Engine ==="
+skel = anim.skeleton("hero")
+spine = skel.addBone("spine", "hero")
+arm = skel.addBone("arm", "spine")
+
+walk = anim.clip("walk", 1.2, true)
+show "Skeleton Root:", skel.root.name
+show "Total Bones in Hierarchy:", skel.boneCount()
+show "Animation Clip:", walk.name, "| Duration:", walk.duration, "s"
+show "[Animation Subsystem Ready @ 120 FPS]"

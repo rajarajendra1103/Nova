@@ -1,0 +1,10 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - STATISTICAL VISUALIZATION (viz)
+# ============================================================
+import viz
+import numpy as np
+
+show "=== Nova Statistical Data Visualization (viz) ==="
+mat2 = np.array([[1.0, 2.0], [3.0, 4.0]])
+fig = viz.heat(mat2)
+show "Visualization Type: 2D Matrix Heatmap (2x2)"

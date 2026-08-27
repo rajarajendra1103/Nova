@@ -1,0 +1,10 @@
+=== Combined Chart ===
+Y: Metrics
+[LINE (growth)] 3 points
+  (1, 1)
+  (2, 4)
+  (3, 9)
+[BAR (metrics)]
+       A | ██████████ (10)
+       B | ████████████████████ (20)
+X: Timeline

@@ -1,0 +1,18 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - SCIKIT-LEARN ML ALIAS (sklearn)
+# ============================================================
+import sklearn as ml
+import numpy as np
+
+show "=== Nova Sklearn Machine Learning Suite ==="
+xData = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+yData = np.array([10.0, 20.0, 30.0, 40.0, 50.0])
+
+reg = ml.linearRegression()
+reg.fit(xData, yData)
+pred = reg.predict(8.0)
+
+show "Classifier: Nova Scikit-Learn Linear Engine"
+show "Training Samples:", xData.size()
+show "Predicted Output for x=8.0:", pred
+show "Status: Model Ready for High-Throughput Batch Inference"

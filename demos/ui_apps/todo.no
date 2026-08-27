@@ -1,0 +1,46 @@
+# ============================================================
+# Example 2: Reactive Todo List Application in Nova UI
+# ============================================================
+import ui
+
+app = ui.app("Nova Todo Pro", 600, 700).bg("#0f172a")
+
+mainCard = ui.card().w(520).pad(20).round(10).bg("#1e293b").center()
+
+headerTitle = ui.title("Task Manager").color("#60a5fa").fontSize(24)
+headerBadge = ui.badge("Active")
+headerRow   = ui.row().add(headerTitle).add(headerBadge)
+mainCard.add(headerRow)
+
+# Input Row
+taskInput = ui.input("What needs to be done?").w(360).id("task_in")
+addBtn    = ui.btnP("Add Task").onClick(() -> {
+    show "Adding task:", taskInput.value
+})
+inputRow  = ui.row().add(taskInput).add(addBtn).margin(12)
+mainCard.add(inputRow)
+
+mainCard.add(ui.line())
+
+# Task list items
+tasks = ["Complete Nova V1.6.1 UI", "Write integration documentation", "Deploy release bundle"]
+listBox = ui.col().margin(10)
+
+each t in tasks:
+    itemCard = ui.box().bg("#334155").pad(10).round(6).wFull()
+    chk = ui.check(t)
+    delBtn = ui.btnS("Delete").bg("#ef4444").color("#ffffff")
+    itemRow = ui.row().add(chk).add(delBtn)
+    itemCard.add(itemRow)
+    listBox.add(itemCard)
+end
+
+mainCard.add(listBox)
+
+# Footer with quick stats
+statsText = ui.para("Total tasks: {tasks.size} | Status: Ready").color("#94a3b8").fontSize(12)
+mainCard.add(statsText)
+
+app.add(mainCard)
+app.show()
+show "Todo UI App rendered successfully!"

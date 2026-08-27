@@ -1,0 +1,11 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - UNIFIED APP LIFECYCLE (app)
+# ============================================================
+import app
+
+show "=== Nova Cross-Platform App Framework ==="
+win = app.window(1280, 800, "Nova Enterprise Studio")
+show "Window Width:", win.width, "| Height:", win.height
+show "Platform Target:", app.platform()
+show "Display FPS Target: 120Hz Native V-Sync"
+show "[App Lifecycle Initialized Successfully]"

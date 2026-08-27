@@ -1,0 +1,22 @@
+﻿# Python cache
+__pycache__/
+*.py[cod]
+*.class
+*.pytest_cache/
+
+# Binary builds
+*.exe
+*.o
+*.obj
+*.dll
+*.so
+*.dylib
+*.wasm
+
+# Runtime library preserved
+!nova_runtime/libnova_runtime.a
+
+# Temp files
+*.tmp
+temp_*.no
+temp_*.c

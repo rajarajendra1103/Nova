@@ -1,0 +1,41 @@
+# ============================================================
+# Example 4: User Registration Form with Validation in Nova UI
+# ============================================================
+import ui
+
+app = ui.app("Nova Member Registration", 550, 680).bg("#0f172a")
+
+formCard = ui.card().w(480).pad(24).round(12).bg("#1e293b").center()
+formCard.add(ui.title("Create Account").color("#38bdf8").fontSize(24))
+formCard.add(ui.para("Please fill in the details below to join").color("#94a3b8").fontSize(14))
+formCard.add(ui.space(12))
+
+regForm = ui.form()
+
+nameIn  = ui.input("Full Name").wFull().margin(6).id("name")
+emailIn = ui.inputE("name@example.com").wFull().margin(6).id("email")
+ageIn   = ui.inputN("Age (18+)").wFull().margin(6).id("age")
+
+roleLabel = ui.para("Select Primary Role:").color("#e2e8f0").margin(4).fontSize(14)
+roleSel   = ui.select(["Software Engineer", "Product Manager", "Data Scientist", "DevOps"], "Software Engineer").wFull().margin(6).id("role")
+
+agreeChk  = ui.check("I agree to the Terms & Privacy Policy").margin(8).id("terms")
+
+submitBtn = ui.btnP("Submit Registration").wFull().margin(12).round(8).fontSize(16)
+
+regForm.add(nameIn)
+regForm.add(emailIn)
+regForm.add(ageIn)
+regForm.add(roleLabel)
+regForm.add(roleSel)
+regForm.add(agreeChk)
+regForm.add(submitBtn)
+
+regForm.onSubmit((data) -> {
+    show "Form submitted with data:", data
+})
+
+formCard.add(regForm)
+app.add(formCard)
+app.show()
+show "Form UI App rendered successfully!"

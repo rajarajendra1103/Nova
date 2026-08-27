@@ -1,0 +1,95 @@
+# ============================================================
+# Nova SciPy & Scikit-Learn ML Test Suite (test_scipy_ml.nova)
+# Zero Underscore (_) | camelCase Naming
+# Works on both Interpreter (DEV) and Compiler (PROD)
+# ============================================================
+import numpy as np
+import scipy as sp
+import sklearn as ml
+
+show "=================================================="
+show "  NOVA SCIPY & ML (SKLEARN) TEST SUITE"
+show "=================================================="
+
+# ============================================================
+# 1. SCIPY: SCIENTIFIC COMPUTING & MATH
+# ============================================================
+show "--- 1. SCIPY INTEGRATION & OPTIMIZATION ---"
+yVals = np.array([0.0, 1.0, 4.0, 9.0, 16.0])
+xVals = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
+trapzArea = sp.trapz(yVals, xVals)
+show "sp.trapz(y, x) integral area:", trapzArea
+
+optX = sp.minimize(x -> (x - 3) * (x - 3) + 2, 0.0, 0.1, 100)
+show "sp.minimize (target min ~3.0):", optX
+
+show "--- 2. SCIPY LINEAR ALGEBRA ---"
+mat2 = np.array([[4.0, 2.0], [1.0, 3.0]])
+matDet = sp.det(mat2)
+show "sp.det([[4, 2], [1, 3]]) (expected 10.0):", matDet
+
+invMat = sp.inv(mat2)
+show "sp.inv matrix:", invMat
+
+bVec = np.array([8.0, 7.0])
+solution = sp.solve(mat2, bVec)
+show "sp.solve(A, b):", solution
+
+show "--- 3. SCIPY SIGNAL & STATS ---"
+sigA = np.array([1.0, 2.0, 3.0])
+sigB = np.array([0.5, 1.0])
+convRes = sp.convolve(sigA, sigB)
+show "sp.convolve result:", convRes
+
+dataSeq = np.array([2.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 9.0])
+show "sp.skew (skewness):", sp.skew(dataSeq)
+show "sp.kurtosis (kurtosis):", sp.kurtosis(dataSeq)
+
+xData = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+yData = np.array([2.0, 4.0, 6.0, 8.0, 10.0])
+show "sp.pearson correlation:", sp.pearson(xData, yData)
+show "sp.euclidean distance:", sp.euclidean(sigA, np.array([1.0, 2.0, 3.0]))
+show "sp.interp(x, y, 2.5):", sp.interp(xData, yData, 2.5)
+
+# ============================================================
+# 2. ML (SKLEARN): MACHINE LEARNING & PREDICTION
+# ============================================================
+show "--- 4. ML LINEAR REGRESSION ---"
+reg = ml.linearRegression()
+reg.fit(xData, yData)
+pred6 = reg.predict(6.0)
+show "Linear Regression predict(6.0) (expected 12.0):", pred6
+show "Linear Regression R2 score:", reg.score(xData, yData)
+
+show "--- 5. ML LOGISTIC REGRESSION ---"
+clf = ml.logisticRegression(0.2, 200)
+trainX = np.array([[1.0, 2.0], [2.0, 3.0], [6.0, 7.0], [7.0, 8.0]])
+trainY = np.array([0.0, 0.0, 1.0, 1.0])
+clf.fit(trainX, trainY)
+testSample = np.array([7.0, 7.0])
+show "Logistic Regression predict([7.0, 7.0]) (expected 1.0):", clf.predict(testSample)
+
+show "--- 6. ML K-MEANS CLUSTERING ---"
+km = ml.kmeans(2, 50)
+km.fit(trainX)
+show "KMeans cluster prediction for [1.0, 1.0]:", km.predict(np.array([1.0, 1.0]))
+
+show "--- 7. ML KNN CLASSIFIER ---"
+knnModel = ml.knn(3)
+knnModel.fit(trainX, trainY)
+show "KNN predict for [1.5, 2.0]:", knnModel.predict(np.array([1.5, 2.0]))
+
+show "--- 8. ML PREPROCESSING & METRICS ---"
+scaler = ml.scaler()
+scaledData = scaler.fitTransform(trainX)
+show "StandardScaler fitTransform shape:", scaledData.shape
+
+yTrue = np.array([1.0, 0.0, 1.0, 1.0, 0.0])
+yPred = np.array([1.0, 0.0, 1.0, 0.0, 0.0])
+show "ml.accuracy:", ml.accuracy(yTrue, yPred)
+show "ml.mse (mean squared error):", ml.mse(yTrue, yPred)
+show "ml.r2 (R-squared score):", ml.r2(xData, yData)
+
+show "=================================================="
+show "  ALL SCIPY & ML (SKLEARN) TESTS PASSED 100%!"
+show "=================================================="

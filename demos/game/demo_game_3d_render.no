@@ -1,0 +1,90 @@
+# ============================================================
+# Nova 2D/3D Game & Direct GPU Rendering Demo
+# ============================================================
+
+show "=================================================="
+show "  NOVA 2D/3D GAME ENGINE & GPU RENDER DEMO"
+show "=================================================="
+
+# 1. Zero-GC Memory Management
+show "=== 1. MEMORY CONTROL & POOLING ==="
+import mem
+
+bulletPool = mem.pool(1000, "bullet")
+b1 = bulletPool.alloc()
+b2 = bulletPool.alloc()
+show "Bullet pool active count:", bulletPool.count()
+bulletPool.free(b2)
+show "After free pool active count:", bulletPool.count()
+
+# 2. Direct GPU 3D Rendering
+show "\n=== 2. DIRECT GPU 3D RENDERING ==="
+import render
+
+win = render.window(1280, 720, "Nova 3D Action RPG")
+show "Render window created:", win.width, "x", win.height
+
+mesh = render.mesh("models/hero.obj")
+tex = render.texture("textures/hero_diffuse.png")
+mat = render.material({color: "gold", texture: tex, shader: "pbr", metallic: 0.8, roughness: 0.2})
+heroEnt = render.entity(mesh, mat)
+
+heroEnt.pos(0, 1.5, 0)
+heroEnt.rot(0, 45, 0)
+heroEnt.scale(1.2, 1.2, 1.2)
+heroEnt.move(0.5, 0, -1.0)
+pos = heroEnt.pos()
+show "Hero entity position:", pos.x, pos.y, pos.z
+
+cam = render.camera(60, 0, 5, 10)
+render.clear("navy")
+render.draw(heroEnt, cam)
+render.present()
+
+# 3. 2D Sprite Rendering
+show "\n=== 3. 2D SPRITE RENDERING ==="
+sp = render.sprite("textures/dragon.png")
+sp.pos(100, 200)
+sp.size(64, 64)
+sp.move(10, -5)
+sp_pos = sp.pos()
+show "Sprite position:", sp_pos.x, sp_pos.y
+render.draw2D(sp)
+
+# 4. Physics Engine
+show "\n=== 4. PHYSICS & RIGIDBODY ENGINE ==="
+import physics
+
+world = physics.world({gravity: -9.8})
+bodyHero = physics.body({mass: 75.0, shape: "box", pos: [0, 10, 0]})
+world.add(bodyHero)
+world.step(0.016)
+p_pos = bodyHero.pos()
+show "Hero physics pos after step:", p_pos.x, p_pos.y, p_pos.z
+
+# 5. Input Engine
+show "\n=== 5. INPUT ENGINE ==="
+import input
+
+input.press("w")
+input.press("space")
+input.setMouse(640, 360)
+show "Key 'w' pressed:", input.isDown("w")
+show "Mouse position:", input.mouseX(), input.mouseY()
+
+# 6. Unified Game Application Loop
+show "\n=== 6. UNIFIED 120 FPS GAME APPLICATION ==="
+import game
+
+gameApp = game.new({title: "Nova 3D Open World", width: 1920, height: 1080, fps: 120})
+gameApp.onLoad(() -> {
+    show "Game onLoad initialized - Scene: level1"
+})
+gameApp.onUpdate((dt) -> {
+    show "Game onUpdate tick | dt:", dt
+})
+gameApp.render()
+
+show "=================================================="
+show "  NOVA 2D/3D GAME DEMO COMPLETED SUCCESSFULLY!"
+show "=================================================="

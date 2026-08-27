@@ -1,0 +1,34 @@
+# ============================================================
+# Nova Demo: Database CRUD & JWT Authentication (demo_db_auth.nova)
+# ============================================================
+import db
+import auth
+
+show "=================================================="
+show "  NOVA DATABASE & JWT AUTHENTICATION DEMO"
+show "=================================================="
+
+# 1. Database Setup (In-Memory or Embedded SQLite)
+db.connect(":memory:")
+db.create("accounts", {id: "int primary", username: "text", role: "text", balance: "int"})
+
+# 2. CRUD Operations
+id1 = db.insert("accounts", {username: "Alice", role: "admin", balance: 5000})
+id2 = db.insert("accounts", {username: "Bob", role: "user", balance: 1200})
+show "Accounts created. Total records:", db.count("accounts")
+
+# 3. Secure Password Hashing (Bcrypt)
+password = "superSecretPassword123"
+hash_val = auth.hash(password)
+show "Hashed Password:", hash_val
+show "Password Verification (Correct):", auth.check(password, hash_val)
+show "Password Verification (Incorrect):", auth.check("wrongPass", hash_val)
+
+# 4. JWT Token Generation & Verification
+secret_key = "nova_jwt_super_secure_key"
+token = auth.token({userId: id1, user: "Alice", role: "admin"}, secret_key)
+show "Generated JWT Token:", token
+
+payload = auth.verify(token, secret_key)
+show "Decoded User:", payload.user
+show "Decoded Role:", payload.role

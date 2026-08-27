@@ -1,0 +1,6 @@
+=== Distribution Box (Viz Statistical Plot) ===
+[HEATMAP]
+           C1      C2
+    C1   1.00    2.00
+    C2   3.00    4.00
+[BOXPLOT] Min: 1 | Q1: 2 | Median: 3 | Q3: 4 | Max: 5

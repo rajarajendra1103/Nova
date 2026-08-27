@@ -1,0 +1,55 @@
+# ============================================================
+# Example 3: Executive Analytics Dashboard in Nova UI
+# ============================================================
+import ui
+
+app = ui.app("Nova Cloud Dashboard", 900, 750).bg("#0f172a")
+
+layoutCol = ui.col().w(840).center()
+
+# Header
+headRow = ui.row().add(ui.title("System Analytics").color("#38bdf8")).add(ui.badge("Live Status").bg("#10b981"))
+layoutCol.add(headRow)
+layoutCol.add(ui.space(10))
+
+# KPI Metric Cards Row
+metricsRow = ui.row()
+
+card1 = ui.card().w(260).pad(16).bg("#1e293b").round(8)
+card1.add(ui.para("TOTAL USERS").color("#94a3b8").fontSize(12))
+card1.add(ui.title("128,450").color("#ffffff").fontSize(28))
+card1.add(ui.text("+14.2% from last week").color("#4ade80").fontSize(12))
+metricsRow.add(card1)
+
+card2 = ui.card().w(260).pad(16).bg("#1e293b").round(8)
+card2.add(ui.para("API REQUESTS").color("#94a3b8").fontSize(12))
+card2.add(ui.title("4.8M / day").color("#ffffff").fontSize(28))
+card2.add(ui.text("99.98% Success Rate").color("#38bdf8").fontSize(12))
+metricsRow.add(card2)
+
+card3 = ui.card().w(260).pad(16).bg("#1e293b").round(8)
+card3.add(ui.para("SERVER LOAD").color("#94a3b8").fontSize(12))
+card3.add(ui.title("24.5%").color("#ffffff").fontSize(28))
+card3.add(ui.text("48 Nodes Active").color("#a78bfa").fontSize(12))
+metricsRow.add(card3)
+
+layoutCol.add(metricsRow)
+layoutCol.add(ui.space(16))
+
+# Data Table Card
+tableCard = ui.card().w(840).pad(16).bg("#1e293b").round(8)
+tableCard.add(ui.subTitle("Recent Service Logs").color("#f8fafc").fontSize(18))
+
+table = ui.table()
+table.head(["Service Name", "Latency", "Region", "Status"])
+table.row(["auth-service-us", "12ms", "us-east-1", "HEALTHY"])
+table.row(["api-gateway-eu", "24ms", "eu-central-1", "HEALTHY"])
+table.row(["db-cluster-primary", "4ms", "us-east-1", "HEALTHY"])
+table.row(["storage-worker-ap", "48ms", "ap-south-1", "HEALTHY"])
+
+tableCard.add(table)
+layoutCol.add(tableCard)
+
+app.add(layoutCol)
+app.show()
+show "Dashboard UI App rendered successfully!"

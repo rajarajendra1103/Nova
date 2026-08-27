@@ -1,0 +1,16 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - REACTIVE UI FRAMEWORK (ui)
+# ============================================================
+import ui
+
+show "=== Nova First-Class Reactive UI Framework ==="
+app = ui.app("Nova Developer Portal", 800, 600)
+app.bg("#0f172a")
+
+card = ui.card().bg("#1e293b").p(24).rounded(16).w(500)
+card.add(ui.title("Welcome to Nova IDE").color("#38bdf8"))
+card.add(ui.para("Next-generation programming language engineered for speed."))
+app.add(card)
+
+show "UI rendered and auto-generated HTML preview"
+app.show()

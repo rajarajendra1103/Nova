@@ -1,0 +1,159 @@
+# Nova V1.5 - Standard Library Test Suite (8 Modules)
+
+show "=================================================="
+show "  NOVA V1.5 STANDARD LIBRARY TEST SUITE"
+show "=================================================="
+
+# ── 1. MATH MODULE ──────────────────────────────────────────
+show "=== 1. MATH MODULE ==="
+import math
+show "math.pi:", math.pi
+show "math.e:", math.e
+show "math.tau:", math.tau
+show "math.phi:", math.phi
+show "math.root(16):", math.root(16)
+show "math.power(2, 3):", math.power(2, 3)
+show "math.abs(-42):", math.abs(-42)
+show "math.floor(3.9):", math.floor(3.9)
+show "math.ceil(3.1):", math.ceil(3.1)
+show "math.round(3.6):", math.round(3.6)
+show "math.sin(math.pi / 2):", math.sin(math.pi / 2)
+show "math.log10(100):", math.log10(100)
+show "math.gcd(24, 36):", math.gcd(24, 36)
+show "math.lcm(12, 18):", math.lcm(12, 18)
+show "math.fact(5):", math.fact(5)
+show "math.isEven(10):", math.isEven(10)
+show "math.isOdd(11):", math.isOdd(11)
+show "math.isPrime(17):", math.isPrime(17)
+show "math.prime(5):", math.prime(5)
+show "math.clamp(15, 0, 10):", math.clamp(15, 0, 10)
+show "math.lerp(0, 100, 0.5):", math.lerp(0, 100, 0.5)
+show "math.hypot(3, 4):", math.hypot(3, 4)
+show "math.range(1, 5):", math.range(1, 5)
+
+# ── 2. STRING MODULE ────────────────────────────────────────
+show "=== 2. STRING MODULE ==="
+import string
+show "string.digits:", string.digits
+show "string.upper('hello'):", string.upper("hello")
+show "string.lower('NOVA'):", string.lower("NOVA")
+show "string.title('hello world'):", string.title("hello world")
+show "string.cap('nova'):", string.cap("nova")
+show "string.trim('  clean  '):", string.trim("  clean  ")
+show "string.has('banana', 'nan'):", string.has("banana", "nan")
+show "string.starts('python', 'py'):", string.starts("python", "py")
+show "string.ends('nova.lang', 'lang'):", string.ends("nova.lang", "lang")
+show "string.padL('42', 5, '0'):", string.padL("42", 5, "0")
+show "string.padR('42', 5, '-'):", string.padR("42", 5, "-")
+show "string.repeat('abc', 3):", string.repeat("abc", 3)
+show "string.reverse('nova'):", string.reverse("nova")
+show "string.wordC('The quick brown fox'):", string.wordC("The quick brown fox")
+show "string.codeAt('A', 0):", string.codeAt("A", 0)
+show "string.fromCode(65):", string.fromCode(65)
+
+# ── 3. LIST MODULE ──────────────────────────────────────────
+show "=== 3. LIST MODULE ==="
+import list
+l = list.range(1, 6)
+show "list.range(1, 6):", l
+show "list.sum(l):", list.sum(l)
+show "list.avg(l):", list.avg(l)
+show "list.max(l):", list.max(l)
+show "list.min(l):", list.min(l)
+show "list.prod([2, 3, 4]):", list.prod([2, 3, 4])
+show "list.unique([1, 2, 2, 3, 3, 3]):", list.unique([1, 2, 2, 3, 3, 3])
+show "list.freq([1, 2, 2, 3]):", list.freq([1, 2, 2, 3])
+show "list.flat([[1, 2], [3, 4], 5]):", list.flat([[1, 2], [3, 4], 5])
+show "list.chunk([1, 2, 3, 4, 5], 2):", list.chunk([1, 2, 3, 4, 5], 2)
+show "list.window([1, 2, 3, 4], 2):", list.window([1, 2, 3, 4], 2)
+show "list.dsorted([3, 1, 4, 1, 5]):", list.dsorted([3, 1, 4, 1, 5])
+show "list.hasAll([1, 2, 3], [1, 2]):", list.hasAll([1, 2, 3], [1, 2])
+
+# ── 4. SET MODULE ───────────────────────────────────────────
+show "=== 4. SET MODULE ==="
+import set
+s1 = {1, 2, 3, 4}
+s2 = {3, 4, 5, 6}
+show "set.U(s1, s2):", set.U(s1, s2)
+show "set.N(s1, s2):", set.N(s1, s2)
+show "set.diff(s1, s2):", set.diff(s1, s2)
+show "set.isSub({1, 2}, s1):", set.isSub({1, 2}, s1)
+show "set.isDisjoint(s1, {99, 100}):", set.isDisjoint(s1, {99, 100})
+show "set.toList(s1):", set.toList(s1)
+show "set.cart({1, 2}, {'a', 'b'}):", set.cart({1, 2}, {"a", "b"})
+
+# ── 5. FILE & OS MODULE ─────────────────────────────────────
+show "=== 5. FILE & OS MODULE ==="
+import file
+show "Current pwd:", file.pwd()
+test_file = "nova_test_file.txt"
+file.writeA(test_file, "Hello from Nova V1.5 File Engine!\nLine 2 content")
+show "file.exists(test_file):", file.exists(test_file)
+show "file.readA(test_file):"
+show file.readA(test_file)
+show "file.lineC(test_file):", file.lineC(test_file)
+show "file.hasText(test_file, 'Nova'):", file.hasText(test_file, "Nova")
+
+# Fluent open() chaining
+show "Fluent open().read():", open(test_file).read()
+file.remove(test_file)
+show "After remove exists:", file.exists(test_file)
+
+# ── 6. RANDOM MODULE ────────────────────────────────────────
+show "=== 6. RANDOM MODULE ==="
+import random
+random.seed(42)
+show "random.int(1, 100):", random.int(1, 100)
+show "random.bool():", random.bool()
+show "random.pick(['apple', 'banana', 'cherry']):", random.pick(["apple", "banana", "cherry"])
+show "random.pickN([10, 20, 30, 40, 50], 3):", random.pickN([10, 20, 30, 40, 50], 3)
+show "random.str(8):", random.str(8)
+show "random.otp(6):", random.otp(6)
+show "random.pass(10):", random.pass(10)
+show "random.dice():", random.dice()
+show "random.coin():", random.coin()
+show "random.card():", random.card()
+show "random.uuid():", random.uuid()
+
+# ── 7. TIME MODULE ──────────────────────────────────────────
+show "=== 7. TIME MODULE ==="
+import time
+show "time.date():", time.date()
+show "time.now():", time.now()
+show "time.year():", time.year()
+show "time.isLeap(2024):", time.isLeap(2024)
+show "time.isLeap(2025):", time.isLeap(2025)
+t_now = time.now()
+show "time.addDay(t_now, 5):", time.addDay(t_now, 5)
+show "time.subYear(t_now, 1):", time.subYear(t_now, 1)
+show "time.format(t_now, 'YYYY/MM/DD'):", time.format(t_now, "YYYY/MM/DD")
+t_start = time.timer()
+time.sleepM(10)
+show "time.elapsed(t_start) > 0:", (time.elapsed(t_start) > 0)
+show "time.age('2000-01-01') >= 24:", (time.age("2000-01-01") >= 24)
+
+# ── 8. JSON MODULE ──────────────────────────────────────────
+show "=== 8. JSON MODULE ==="
+import json
+data = {"name": "Nova", "version": 1.5, "config": {"mode": "fast", "active": true}}
+json_str = json.text(data)
+show "json.text(data):", json_str
+parsed = json.map(json_str)
+show "json.map parsed['name']:", parsed["name"]
+show "json.getPath config.mode:", json.getPath(data, "config.mode")
+json.setPath(data, "config.threads", 8)
+show "After setPath config.threads:", json.getPath(data, "config.threads")
+show "json.flat(data):", json.flat(data)
+show "json.isValid(json_str):", json.isValid(json_str)
+show "json.isValid('invalid json'):", json.isValid("invalid json")
+
+d1 = {"a": 1, "b": 2}
+d2 = {"a": 1, "b": 99, "c": 3}
+diff_obj = json.diff(d1, d2)
+show "json.diff(d1, d2):", diff_obj
+patched = json.patch(d1, diff_obj)
+show "json.patch(d1, diff):", patched
+
+show "=================================================="
+show "  ALL NOVA V1.5 STANDARD LIBRARY TESTS PASSED!"
+show "=================================================="

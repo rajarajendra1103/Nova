@@ -1,0 +1,38 @@
+# ============================================================
+# Example 1: Login Application in Nova UI
+# ============================================================
+import ui
+
+app = ui.app("Nova Auth Portal", 450, 400).bg("#0f172a")
+
+card = ui.card().w(380).pad(24).round(12).bg("#1e293b").center()
+
+title = ui.title("Welcome Back").center().color("#38bdf8").fontSize(26)
+sub   = ui.para("Sign in to your account").center().color("#94a3b8").fontSize(14)
+
+userInput = ui.input("Username or Email").wFull().margin(8).id("user")
+passInput = ui.inputP("Password").wFull().margin(8).id("pass")
+
+statusText = ui.para("").center().color("#4ade80").fontSize(14)
+
+loginBtn = ui.btnP("Sign In").wFull().margin(12).round(8).fontSize(16)
+loginBtn.onClick(() -> {
+    show "Login attempted with user:", userInput.value
+    statusText.text_content = "Signing in..."
+})
+
+registerLink = ui.link("Create an account", "#").center().color("#38bdf8").fontSize(13)
+
+card.add(title)
+card.add(sub)
+card.add(ui.space(12))
+card.add(userInput)
+card.add(passInput)
+card.add(loginBtn)
+card.add(statusText)
+card.add(ui.space(8))
+card.add(registerLink)
+
+app.add(card)
+app.show()
+show "Login UI App rendered successfully!"

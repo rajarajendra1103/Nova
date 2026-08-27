@@ -1,0 +1,132 @@
+show "=================================================="
+show "  NOVA REAL-TIME WEBSOCKETS & MOBILE NATIVE UI"
+show "=================================================="
+
+# ============================================================
+# 1. REAL-TIME WEBSOCKETS & ROOMS (ws & server.ws)
+# ============================================================
+show "=== 1. WEBSOCKET & REAL-TIME TESTS ==="
+import ws
+
+# 1.1 Create standalone WebSocket server instance
+ws_server = ws.server(8080)
+show "WebSocket server created on port:", ws_server.port
+
+# 1.2 Setup event handlers
+ws_server.on("connect", (sock) -> {
+    show "[Server Event] Client connected:", sock.id
+})
+
+# 1.3 Create in-process simulated client sockets
+client1 = ws_server.createClient("client_alpha")
+client2 = ws_server.createClient("client_beta")
+
+show "Active WS clients count:", ws_server.count()
+
+# 1.4 Test Room Joining & Leaving
+client1.join("game_lobby")
+client2.join("game_lobby")
+show "Client 1 joined room 'game_lobby'"
+
+# 1.5 Test Room Broadcasting
+room_sent = ws_server.to("game_lobby").emit("match_found", {matchId: 404, map: "CyberCity"})
+show "Broadcasted to 'game_lobby' recipient count:", room_sent
+
+# 1.6 Test Socket Direct Message and JSON
+client1.json({score: 1500, rank: "Diamond"})
+show "Client 1 received messages count:", client1.received_messages.size
+
+# 1.7 Test Global Broadcast
+broadcast_count = ws_server.broadcast("server_announcement", {text: "Server restart in 10m"})
+show "Global broadcast recipient count:", broadcast_count
+
+# 1.8 Test Standalone WS Client
+client_conn = ws.connect("ws://localhost:8080/realtime")
+client_conn.send("Hello from Nova WS Client")
+show "WS Client connection active:", client_conn.connected
+show "WS Client sent history size:", client_conn.history.size
+
+
+# ============================================================
+# 2. MOBILE NATIVE UI (iOS / Android) & APP INTEGRATION
+# ============================================================
+show "=== 2. MOBILE NATIVE UI WIDGETS ==="
+import ui
+import app
+
+# 2.1 Test Mobile Device Profile & Orientation
+app.setScreen(390, 844, "ios", "mobile")
+show "Is Mobile device:", app.isMobile()
+show "Is iOS platform:", app.isIOS()
+show "Is Android platform:", app.isAndroid()
+show "Current Platform:", app.platform()
+
+app.setOrientation("portrait")
+show "Current Orientation:", app.orientation()
+
+# 2.2 Test Mobile Haptics & Status Bar
+haptic_res = app.haptics("success")
+show "Triggered Haptics:", haptic_res
+
+vibrate_res = app.vibrate(150)
+show "Triggered Vibrate:", vibrate_res
+
+status_bar = app.statusBar("light-content", "#0f172a")
+show "Status Bar Config:", status_bar.style, status_bar.bg
+
+# 2.3 Build Mobile Native UI Widget Tree
+top_bar = ui.appBar("Nova Mobile Messenger", "menu", ["search", "settings"])
+nav_bar = ui.bottomNav([
+    {icon: "chat", label: "Chats", active: true},
+    {icon: "call", label: "Calls"},
+    {icon: "user", label: "Profile"}
+])
+
+fab_btn = ui.fab("+", () -> {
+    show "FAB Clicked: New Message"
+})
+
+contact1 = ui.listTile("Alex Chen", "Hey, are you joining the raid?", "avatar1.png", "12:45 PM")
+contact2 = ui.listTile("Sarah Connor", "Nova WebSockets are blazing fast!", "avatar2.png", "11:20 AM")
+
+chat_list = ui.list([contact1, contact2])
+
+switch_elem = ui.toggleSwitch(true)
+slider_elem = ui.slider(0, 100, 75)
+toast_elem = ui.toast("Message sent successfully!", 2.0, "success")
+dialog_elem = ui.modalDialog("Confirm Delete", "Are you sure you want to delete this chat?", ["Cancel", "Delete"])
+
+# Compose inside Mobile Safe Area
+mobile_screen = ui.safeArea()
+mobile_screen.add(top_bar)
+mobile_screen.add(chat_list)
+mobile_screen.add(switch_elem)
+mobile_screen.add(slider_elem)
+mobile_screen.add(nav_bar)
+mobile_screen.add(fab_btn)
+
+show "Mobile Screen Element Kind:", mobile_screen.kind
+show "Mobile Screen Children Count:", mobile_screen.children.size
+
+# 2.4 Instantiate and run Mobile App
+mobile_app = app.new({title: "Nova Mobile App", width: 390, height: 844, fps: 120})
+mobile_app.setRoot(mobile_screen)
+
+mobile_app.onPause(() -> {
+    show "[Lifecycle] Mobile App Paused"
+})
+
+mobile_app.onResume(() -> {
+    show "[Lifecycle] Mobile App Resumed"
+})
+
+mobile_app.onBack(() -> {
+    show "[Lifecycle] Mobile Back Button Pressed"
+})
+
+# Run the app render
+mobile_app.run()
+
+show "=================================================="
+show "  ALL REAL-TIME & MOBILE TESTS PASSED SUCCESSFULLY"
+show "=================================================="

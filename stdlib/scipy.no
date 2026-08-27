@@ -1,0 +1,14 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - SCIPY SCIENTIFIC COMPUTING (scipy)
+# ============================================================
+import scipy as sp
+import numpy as np
+
+show "=== Nova SciPy Scientific & Mathematical Toolkit ==="
+yVals = np.array([0.0, 1.0, 4.0, 9.0, 16.0])
+xVals = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
+trapzArea = sp.trapz(yVals, xVals)
+show "Trapezoidal Integration Area:", trapzArea
+
+optX = sp.minimize(x -> (x - 3) * (x - 3) + 2, 0.0, 0.1, 100)
+show "Numerical Optimization Minima (target ~3.0):", optX

@@ -1,0 +1,15 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - AI & NEURAL NETWORKS (ai)
+# ============================================================
+import ai
+import numpy as np
+
+show "=== 1. AI Neural Inference Engine ==="
+net = ai.dense(5, 1, "sigmoid")
+input_vec = np.array([0.5, 1.2, -0.3, 0.8, 1.0])
+prediction = ai.forward(net, input_vec)
+
+show "Input Tensor:", input_vec
+show "Dense Layer (5 In -> 1 Out, Sigmoid Activation)"
+show "Inference Output Probability:", prediction
+show "[AI Model Inference Executed Successfully]"

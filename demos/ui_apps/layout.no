@@ -1,0 +1,43 @@
+# ============================================================
+# Example 5: Visual Layout Showcase (Row, Col, Grid, Stack, Scroll)
+# ============================================================
+import ui
+
+app = ui.app("Nova Layout Engine Showcase", 900, 850).bg("#0f172a")
+
+mainContainer = ui.col().w(840).center().pad(16)
+
+mainContainer.add(ui.title("Layout System Demo").color("#38bdf8").fontSize(26))
+mainContainer.add(ui.para("Demonstrating Rows, Columns, CSS Grid, and Scrollable Containers").color("#94a3b8"))
+
+# Section 1: Row Layout
+mainContainer.add(ui.subTitle("1. Flex Row Container").color("#f8fafc").fontSize(18).margin(8))
+demoRow = ui.row().wFull()
+demoRow.add(ui.box().bg("#2563eb").pad(12).round(6).add(ui.text("Row Item 1").color("#ffffff")))
+demoRow.add(ui.box().bg("#7c3aed").pad(12).round(6).add(ui.text("Row Item 2").color("#ffffff")))
+demoRow.add(ui.box().bg("#059669").pad(12).round(6).add(ui.text("Row Item 3").color("#ffffff")))
+mainContainer.add(demoRow)
+mainContainer.add(ui.space(16))
+
+# Section 2: 2x2 Grid Layout
+mainContainer.add(ui.subTitle("2. Responsive Grid Container (2x2)").color("#f8fafc").fontSize(18).margin(8))
+demoGrid = ui.grid(2, 2).wFull()
+demoGrid.add(ui.card().bg("#1e293b").pad(16).add(ui.title("Cell (1,1)").fontSize(18)).add(ui.para("Top-Left Grid Tile")))
+demoGrid.add(ui.card().bg("#1e293b").pad(16).add(ui.title("Cell (1,2)").fontSize(18)).add(ui.para("Top-Right Grid Tile")))
+demoGrid.add(ui.card().bg("#1e293b").pad(16).add(ui.title("Cell (2,1)").fontSize(18)).add(ui.para("Bottom-Left Grid Tile")))
+demoGrid.add(ui.card().bg("#1e293b").pad(16).add(ui.title("Cell (2,2)").fontSize(18)).add(ui.para("Bottom-Right Grid Tile")))
+mainContainer.add(demoGrid)
+mainContainer.add(ui.space(16))
+
+# Section 3: Scrollable container
+mainContainer.add(ui.subTitle("3. Scrollable Feed Container").color("#f8fafc").fontSize(18).margin(8))
+scrollBox = ui.scroll().h(120).bg("#1e293b").pad(12).round(8).wFull()
+each i in [1, 2, 3, 4, 5, 6, 7, 8]:
+    feedItem = ui.box().bg("#334155").pad(8).round(4).margin(4).add(ui.text("Feed Item #{i} - Real-time activity log"))
+    scrollBox.add(feedItem)
+end
+mainContainer.add(scrollBox)
+
+app.add(mainContainer)
+app.show()
+show "Layout UI App rendered successfully!"

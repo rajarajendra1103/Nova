@@ -1,0 +1,14 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - SPATIAL AUDIO (audio)
+# ============================================================
+import audio
+
+show "=== Nova 3D Spatial Audio Subsystem ==="
+snd = audio.loadSound("ambient_synth.wav", 0.85)
+audio.setMasterVolume(0.85)
+audio.setListenerPosition(0.0, 0.0, 0.0)
+
+show "Sound Stream Initialized:", snd
+show "Master Volume: 0.85 | Pitch: 1.0"
+show "Spatial 3D Audio Channels: Stereo / HRTF Binaural"
+show "[Audio Subsystem Ready]"

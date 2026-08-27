@@ -1,0 +1,57 @@
+import numpy as np
+
+show "=== Testing numpy / np ==="
+a = np.array([1, 2, 3, 4, 5])
+show "a.shape:" a.shape
+show "np.sum(a):" np.sum(a)
+show "np.mean(a):" np.mean(a)
+show "a.mean():" a.mean()
+
+m = np.array([[1, 2, 3], [4, 5, 6]])
+show "m.shape:" m.shape
+show "m.T:" m.T
+show "m.reshape([3, 2]):" m.reshape([3, 2])
+
+b = a * 2
+show "b (a * 2):" b
+
+c = np.zeros([2, 3])
+show "zeros [2, 3]:" c
+
+d = np.ones(3)
+show "ones 3:" d
+
+e = np.rand([2, 2])
+show "rand [2, 2]:" e
+
+show "np.dot([1,2,3], [4,5,6]):" np.dot([1, 2, 3], [4, 5, 6])
+show "np.oneHot(2, 5):" np.oneHot(2, 5)
+show "np.relu([-5, 0, 5]):" np.relu([-5, 0, 5])
+show "np.softmax([1, 2, 3]):" np.softmax([1, 2, 3])
+
+import pandas as pd
+
+show "=== Testing pandas / pd ==="
+frame = pd.DF({name: ["Ravi", "Ram"], age: [21, 20]})
+show "frame.shape:" frame.shape
+show "frame.col('name'):" frame.col("name")
+show "frame['name']:" frame["name"]
+show "frame.row(0):" frame.row(0)
+show "frame[0]:" frame[0]
+
+adults = frame.where("age > 18")
+show "adults rows where age > 18:" adults.rows
+
+adults2 = frame.filter((r) -> r.age > 18)
+show "adults2 rows filter:" adults2.rows
+
+sorted_df = frame.sort("age")
+show "sorted by age:" sorted_df.col("age")
+
+# Test CSV I/O
+frame.toCsv("test_users.csv")
+frame2 = pd.readCsv("test_users.csv")
+show "Read CSV shape:" frame2.shape
+
+num_arr = frame.toNum()
+show "frame.toNum():" num_arr

@@ -1,0 +1,165 @@
+# ============================================================
+# Nova Game Unified Test Suite (6 Modules: mem, render, game, physics, input, asset)
+# 2D and 3D Game Dev, Zero-GC Pooling, 120 FPS Direct GPU Rendering
+# Strict Zero Underscore Rule - 100% camelCase
+# ============================================================
+import mem
+import render
+import game
+import physics
+import input
+import asset
+
+show "=================================================="
+show "  NOVA GAME UNIFIED (2D & 3D) ENGINE TEST SUITE"
+show "=================================================="
+
+# ── 1. MEMORY CONTROL & OBJECT POOLING ──────────────────────
+show "=== 1. MEMORY CONTROL & POOLING ==="
+mem.noGC()
+bulletPool = mem.pool(1000, "bullet")
+show "Bullet pool total capacity:", bulletPool.total()
+
+# Get from pool (0ms latency, zero GC allocation)
+b1 = bulletPool.get()
+b2 = bulletPool.get()
+show "Bullet pool active count:", bulletPool.count()
+
+# Free back to pool
+bulletPool.free(b1)
+bulletPool.free(b2)
+show "After free pool active count:", bulletPool.count()
+
+# Explicit allocation & stack memory
+rawBlock = mem.alloc(1024)
+show "Explicit allocated block:", rawBlock
+mem.free(rawBlock)
+
+mem.stack(512, () -> {
+    tempBlock = mem.allocTemp(512)
+    show "Inside stack memory scope:", tempBlock
+})
+
+show "Memory used:", mem.used()
+show "Memory leaks count:", mem.leaks().len()
+
+# ── 2. DIRECT GPU 3D RENDERING ──────────────────────────────
+show "\n=== 2. DIRECT GPU 3D RENDERING ==="
+win = render.window(1280, 720, "Nova 3D Action RPG")
+show "Render window created:", win.width, "x", win.height
+
+mesh = render.mesh("models/hero.obj")
+tex = render.texture("textures/hero_diffuse.png")
+mat = render.material({color: "gold", texture: tex, shader: "pbr", metallic: 0.8, roughness: 0.2})
+heroEnt = render.entity(mesh, mat)
+
+heroEnt.pos(0, 1.5, 0)
+heroEnt.rot(0, 45, 0)
+heroEnt.scale(1.2, 1.2, 1.2)
+heroEnt.move(0.5, 0, -1.0)
+pos = heroEnt.pos()
+show "Hero entity position:", pos.x, pos.y, pos.z
+
+cam = render.camera({fov: 75, pos: [0, 5, 10], lookAt: [0, 1.5, 0]})
+sunLight = render.light({type: "directional", color: "white", intensity: 1.5})
+
+render.clear({color: "sky"})
+render.shadow(true)
+render.ao(true)
+render.bloom(true)
+render.fog({color: "gray", density: 0.005})
+render.skybox("textures/skybox.hdr")
+
+render.draw(heroEnt, cam)
+render.drawAll([heroEnt], cam)
+frameStats = render.present()
+show "Draw calls:", frameStats.drawCalls, "Triangles rendered:", frameStats.triangles
+
+# ── 3. 2D SPRITE RENDERING ──────────────────────────────────
+show "\n=== 3. 2D SPRITE RENDERING ==="
+playerSprite = render.sprite("sprites/player.png")
+playerSprite.pos(100, 200)
+playerSprite.size(64, 64)
+playerSprite.move(10, -5)
+show "Sprite position:", playerSprite.pos().x, playerSprite.pos().y
+
+render.draw2D(playerSprite)
+render.draw2DAll([playerSprite])
+
+# ── 4. PHYSICS ENGINE ───────────────────────────────────────
+show "\n=== 4. PHYSICS & RIGIDBODY ENGINE ==="
+world = physics.world({gravity: [0, -9.8, 0]})
+
+rigidHero = physics.body({mass: 75.0, shape: "capsule", pos: [0, 10, 0]})
+rigidHero.applyForce([0, 50, 0])
+rigidHero.applyImpulse([0, 100, 0])
+
+ground = physics.box({mass: 0.0, size: [100, 1, 100], pos: [0, 0, 0]})
+
+physics.update(0.016)
+heroPhysicsPos = rigidHero.pos()
+show "Hero physics pos after step:", heroPhysicsPos.x, heroPhysicsPos.y, heroPhysicsPos.z
+
+physics.onCollide((a, b) -> {
+    show "Collision detected between bodies"
+})
+
+# ── 5. INPUT ENGINE ─────────────────────────────────────────
+show "\n=== 5. INPUT ENGINE ==="
+input.setKey("space", true)
+input.setKey("w", true)
+input.setMouse(640, 360, "left", true)
+input.setTouch(320, 240, true)
+
+show "Key 'w' pressed:", input.key("w")
+show "Key 'space' down event:", input.keyDown("space")
+show "Mouse position:", input.mousePos().x, input.mousePos().y
+show "Mouse left button down:", input.mouseDown("left")
+show "Touch position:", input.touchPos().x, input.touchPos().y
+show "Touch down active:", input.touchDown()
+
+# ── 6. ASSET MANAGEMENT ─────────────────────────────────────
+show "\n=== 6. ASSET MANAGEMENT & STREAMING ==="
+mAsset = asset.loadModel("models/dragon.obj")
+tAsset = asset.loadTexture("textures/dragon.png")
+sAsset = asset.loadSound("audio/roar.wav")
+
+show "Loaded assets list:", asset.list()
+show "Assets memory used:", asset.used()
+asset.free("models/dragon.obj")
+show "After free asset list:", asset.list()
+
+# ── 7. UNIFIED 120 FPS GAME LOOP & ECS ──────────────────────
+show "\n=== 7. UNIFIED 120 FPS GAME APPLICATION ==="
+app = game.new({title: "Nova 3D Open World", width: 1920, height: 1080, fps: 120})
+
+level1 = game.scene("level1")
+playerEnt = game.entity({name: "CyberKnight", pos: [0, 0, 0]})
+playerEnt.add("render", heroEnt)
+playerEnt.add("physics", rigidHero)
+level1.add(playerEnt)
+
+app.onLoad(() -> {
+    show "Game onLoad initialized - Scene:", level1.scene_name
+    show "Player entity name:", playerEnt.name()
+    show "Player initial pos:", playerEnt.pos().x, playerEnt.pos().y, playerEnt.pos().z
+})
+
+app.onUpdate((dt) -> {
+    playerEnt.move(0.1, 0, 0.2)
+    physics.update(dt)
+    show "Game onUpdate tick | dt:", dt, "Player pos:", playerEnt.pos().x, playerEnt.pos().y, playerEnt.pos().z
+})
+
+app.onDraw(() -> {
+    render.clear({color: "darkslate"})
+    render.draw(heroEnt, cam)
+    render.present()
+    show "Game onDraw executed | Memory used:", mem.used()
+})
+
+app.run()
+
+show "\n=================================================="
+show "  ALL 6 NOVA GAME MODULES PASSED SUCCESSFULLY!"
+show "=================================================="

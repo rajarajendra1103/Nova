@@ -1,0 +1,13 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - NUMPY (np)
+# ============================================================
+import numpy as np
+
+show "=== Nova SIMD-Accelerated NumPy Computing ==="
+arr = np.array([10.5, 20.0, 35.5, 50.0, 80.0])
+show "Array Elements:", arr
+show "NumPy Array Mean:", np.mean(arr)
+show "NumPy Array Sum:", np.sum(arr)
+show "NumPy Array Std:", np.std(arr)
+show "NumPy Array Max:", np.max(arr)
+show "NumPy Array Min:", np.min(arr)

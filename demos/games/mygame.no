@@ -1,0 +1,51 @@
+# ============================================================
+# Nova Cross-Platform Game & AI Showcase (mygame.nova)
+# Works on both Interpreter (DEV) and Compiler (PROD)
+# Same Libs, Same Imports: app, game, render, mem, numpy as np, ai
+# ============================================================
+import app
+import game
+import render
+import mem
+import numpy as np
+import ai
+
+show "=================================================="
+show "  NOVA UNIFIED NATIVE ENGINE (DEV & PROD) DEMO"
+show "=================================================="
+
+# 1. Zero-GC Memory Management
+mem.noGC()
+bulletPool = mem.pool(500, "bullet")
+bullet = bulletPool.get()
+show "Bullet active item:", bullet
+
+# 2. NumPy Array Computing (Same np.array API)
+arr = np.array([10.0, 20.0, 30.0, 40.0, 50.0])
+show "NumPy array mean:", arr.mean()
+show "NumPy array sum:", arr.sum()
+
+# 3. AI Neural Network Inference
+layer = ai.dense(5, 2, "relu")
+pred = ai.forward(layer, arr)
+show "AI Dense Layer forward output:", pred
+
+# 4. 3D Game Render Pipeline
+win = render.window(1280, 720, "Nova Cyber Odyssey")
+heroMesh = render.mesh("models/hero.obj")
+heroMat = render.material({color: "cyan", shader: "pbr", metallic: 0.9, roughness: 0.1})
+hero = render.entity(heroMesh, heroMat)
+hero.pos(0, 2, 5)
+
+cam = render.camera({fov: 80, pos: [0, 6, 12]})
+render.clear({color: "midnight"})
+render.draw(hero, cam)
+render.present()
+
+# 5. App / Game Native Main Loop
+myGame = game.new({title: "Nova Cyber Odyssey", width: 1280, height: 720, fps: 120})
+myGame.run()
+
+show "=================================================="
+show "  NOVA DEV/PROD DEMO FINISHED SUCCESSFULLY!"
+show "=================================================="

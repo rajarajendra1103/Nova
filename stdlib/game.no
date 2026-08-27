@@ -1,0 +1,14 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - 3D GAME ENGINE (game)
+# ============================================================
+import game
+
+show "=== Nova 120 FPS Direct GPU Game Framework ==="
+gApp = game.new({title: "Nova Odyssey", width: 1920, height: 1080, fps: 120})
+gApp.onLoad(() -> {
+    show "Game scene level1 initialized"
+})
+gApp.onUpdate((dt) -> {
+    show "Game tick | dt:", dt
+})
+gApp.render()

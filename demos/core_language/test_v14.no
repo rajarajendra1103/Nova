@@ -1,0 +1,197 @@
+# Nova V1.4 - Comprehensive Feature Test Suite
+
+show "=========================================="
+show "  NOVA V1.4 TEST SUITE"
+show "=========================================="
+
+# ── 1. STRING INTERPOLATION ─────────────────────────────────
+show "=== 1. String Interpolation ==="
+name = "Ravi"
+age = 21
+show "Hi {name}, age {age}!"
+show "Math in string: 10 + 20 = {10 + 20}"
+show 'Single quotes are raw: {name} {age}'
+
+# ── 2. CLASS SYSTEM ──────────────────────────────────────────
+show "=== 2. Class System ==="
+class Animal:
+    public species = "Unknown"
+    init(s):
+        this.species = s
+    end
+    def sound():
+        give "Some generic sound"
+    end
+    def speak():
+        give "{this.species} says: {this.sound()}"
+    end
+end
+
+class Dog extends Animal:
+    public name = "Doggo"
+    private pin = 1234
+    static count = 0
+    init(n):
+        super.init("Dog")
+        this.name = n
+        Dog.count += 1
+    end
+    def sound():
+        give "Woof!"
+    end
+    get dogName():
+        give this.name
+    end
+    set dogName(v):
+        this.name = v
+    end
+    static def getCount():
+        give Dog.count
+    end
+end
+
+d = Dog("Buddy")
+show "Dog speech:" d.speak()
+show "Dog getter:" d.dogName
+d.dogName = "Max"
+show "After setter:" d.dogName
+show "Static method count:" Dog.getCount()
+
+# ── 3. ADVANCED COLLECTIONS & LAMBDAS ─────────────────────────
+show "=== 3. List & Lambdas ==="
+nums = [1, 2, 3, 4, 5, 2, 4]
+show "Nums:" nums
+show "Unique:" nums.unique()
+show "Freq:" nums.freq()
+show "Sum:" nums.sum()
+show "Avg:" nums.avg()
+show "Max:" nums.max()
+show "Min:" nums.min()
+show "Prod:" [1, 2, 3, 4].prod()
+show "Chunk 3:" [1, 2, 3, 4, 5, 6, 7].chunk(3)
+show "Window 2:" [1, 2, 3, 4].window(2)
+show "Zip:" [1, 2, 3].zip(["a", "b", "c"])
+show "HasAll [1, 2]:" nums.hasAll([1, 2])
+show "HasAny [99, 5]:" nums.hasAny([99, 5])
+show "CountIf > 2:" nums.countIf(x -> x > 2)
+show "Find > 3:" nums.find(x -> x > 3)
+show "FindLast > 3:" nums.findLast(x -> x > 3)
+show "FindIndex == 3:" nums.findIndex(x -> x == 3)
+show "FindAll > 2:" nums.findAll(x -> x > 2)
+show "Every > 0:" nums.every(x -> x > 0)
+show "Some > 4:" nums.some(x -> x > 4)
+show "Flat:" [[1, 2], [3, 4], 5].flat()
+show "FlatMap:" [1, 2, 3].flatMap(x -> [x, x * 10])
+show "Group mod 2:" [1, 2, 3, 4, 5, 6].group(x -> x % 2)
+show "Take 3:" nums.take(3)
+show "Drop 4:" nums.drop(4)
+
+show "=== 4. Set Methods & Operators ==="
+s1 = {1, 2, 3, 4}
+s2 = {3, 4, 5, 6}
+show "s1 | s2:" (s1 | s2)
+show "s1 & s2:" (s1 & s2)
+show "s1 - s2:" (s1 - s2)
+show "s1 ^ s2:" (s1 ^ s2)
+show "s1 isSub s2:" s1.isSub(s2)
+show "s1 isDisjoint {10, 20}:" s1.isDisjoint({10, 20})
+show "s1.toList:" s1.toList()
+show "s1.filter:" s1.filter(x -> x > 2)
+show "s1.sum:" s1.sum()
+
+show "=== 5. Map Methods ==="
+m = {"a": 1, "b": 2, "c": 3}
+nested = {"user": {"profile": {"name": "Nova"}}}
+show "Get with default:" m.get("z", 100)
+show "GetPath user.profile.name:" nested.getPath("user.profile.name")
+show "Keys:" m.keys()
+show "Values:" m.values()
+show "HasValue 2:" m.hasValue(2)
+show "Merge:" m.merge({"d": 4})
+show "Invert:" m.invert()
+show "Pick [a, c]:" m.pick(["a", "c"])
+show "Omit [b]:" m.omit(["b"])
+show "Filter (k, v) -> v > 1:" m.filter((k, v) -> v > 1)
+show "MapValues v -> v * 10:" m.mapValues(v -> v * 10)
+
+show "=== 6. Tuple Methods ==="
+tup = (10, 20, 30, 40)
+show "First:" tup.first()
+show "Last:" tup.last()
+show "At 2:" tup.at(2)
+show "Sum:" tup.sum()
+show "Max:" tup.max()
+
+show "=== 7. Comprehensions ==="
+list_comp = [take x * 2 each x in [1, 2, 3, 4, 5] if x > 2]
+show "List comprehension [take x*2 each x in nums if x>2]:" list_comp
+set_comp = {take x each x in {1, 2, 3, 4} if x % 2 == 0}
+show 'Set comprehension {take x each x in set if x%2==0}:' set_comp
+
+# ── 8. ENUMS ────────────────────────────────────────────────
+show "=== 8. Enums ==="
+enum Color:
+    RED
+    GREEN
+    BLUE
+end
+
+enum Status:
+    OK = 200
+    NOT_FOUND = 404
+    SERVER_ERROR = 500
+end
+
+show "Color.RED:" Color.RED
+show "Status.OK name:" Status.OK.name
+show "Status.OK value:" Status.OK.value
+show "Status.OK == 200:" (Status.OK == 200)
+show "Status count:" Status.count()
+show "Status has NOT_FOUND:" Status.has("NOT_FOUND")
+show "Status fromValue 404:" Status.fromValue(404)
+
+show "Enum in choose:"
+c = Color.GREEN
+choose c:
+    when Color.RED:
+        show "It is RED"
+    when Color.GREEN:
+        show "It is GREEN"
+    otherwise:
+        show "Other color"
+end
+
+show "Enum iteration:"
+each item in Status.values():
+    show "Status item:" item.name item.value
+end
+
+# ── 9. THROW, ERROR, TRY CATCH FINALLY, ASSERT ──────────────
+show "=== 9. Errors, Throw, Assert ==="
+try:
+    throw "Custom string error!"
+catch e:
+    show "Caught custom throw:" e
+end
+
+try:
+    throw TypeError("Invalid type supplied", 400)
+catch TypeError as te:
+    show "Caught typed error:" te
+catch e:
+    show "Fallback catch:" e
+finally:
+    show "Finally executed successfully"
+end
+
+try:
+    assert 10 > 5, "Math still works"
+    show "Assert 10 > 5 passed!"
+    assert 2 > 10, "This must fail!"
+catch AssertionError as ae:
+    show "Caught expected assertion error:" ae
+end
+
+show "=========================================="
+show "  ALL NOVA V1.4 TESTS COMPLETED!"
+show "=========================================="

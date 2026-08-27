@@ -1,0 +1,12 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - 2D/3D RIGID BODY PHYSICS (physics)
+# ============================================================
+import physics
+
+show "=== Nova High-Performance Physics Simulation ==="
+world = physics.world({gravity: -9.81})
+body = physics.body({mass: 5.0, friction: 0.4})
+
+show "Physics World Initialized with Gravity: -9.81 m/s²"
+show "Spawned Rigid Body (Mass: 5.0kg, Friction: 0.4)"
+show "Physics Step: 60Hz Fixed Timestep Active"

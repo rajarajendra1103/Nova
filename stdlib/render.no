@@ -1,0 +1,15 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - DIRECT GPU RENDERING (render)
+# ============================================================
+import render
+
+show "=== Nova Direct GPU Hardware Pipeline ==="
+win = render.window(1280, 720, "Nova 3D RPG")
+show "Render window created:", win.width, "x", win.height
+
+mesh = render.mesh("models/hero.obj")
+tex = render.texture("textures/hero.png")
+mat = render.material({color: "gold", texture: tex, shader: "pbr", metallic: 0.8, roughness: 0.2})
+heroEnt = render.entity(mesh, mat)
+heroEnt.pos(0.5, 1.5, -1.0)
+show "Hero entity placed at position:", heroEnt.pos()

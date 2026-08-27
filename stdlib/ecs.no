@@ -1,0 +1,14 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - ENTITY COMPONENT SYSTEM (ecs)
+# ============================================================
+import ecs
+
+show "=== Nova Cache-Friendly ECS Engine ==="
+world = ecs.world()
+e1 = world.spawn("Player")
+e2 = world.spawn("Boss")
+
+show "Spawned Entity 1:", e1
+show "Spawned Entity 2:", e2
+show "Component Memory Alignment: SIMD Structure-of-Arrays (SoA)"
+show "[ECS Systems Running at 120 Ticks/sec]"

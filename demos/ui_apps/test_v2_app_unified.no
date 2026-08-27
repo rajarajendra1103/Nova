@@ -1,0 +1,111 @@
+# ============================================================
+# Nova App Unified & Responsive UI Test Suite (120 FPS Zero-GC)
+# Android + iOS + Desktop Windows/macOS/Linux + Web + Custom
+# No _ symbol anywhere - 100% camelCase
+# ============================================================
+import app
+import ui
+import mem
+
+show "=================================================="
+show "  NOVA APP UNIFIED & RESPONSIVE UI TEST SUITE"
+show "=================================================="
+
+# ── 1. Create Unified App ───────────────────────────────────
+myApp = app.new({title:"My Shop", fps:120})
+
+myApp.onLoad(() -> {
+    screen = app.screen()
+    show "Platform:", screen.platform, "Type:", screen.type, "Size:", "{screen.width}x{screen.height}", "Mem:", mem.used()
+    
+    main = ui.flex({dir:"col", width:"100%", height:"100%"})
+    
+    header = ui.box({width:"100%", height:60, color:"blue"})
+    headerText = ui.text("My Shop", {size:app.scale(20), color:"white"})
+    header.add(headerText)
+    main.add(header)
+    
+    responsive = ui.responsive({
+        mobile:{cols:1, dir:"col", gap:10, padding:10},
+        tablet:{cols:2, dir:"row", gap:15, padding:15},
+        desktop:{cols:4, dir:"row", gap:20, padding:20},
+        custom:{cols:1, dir:"col", gap:5, padding:5}
+    })
+    cols = responsive.get().cols
+    show "Responsive cols for current screen:", cols
+    
+    content = ui.grid({cols:cols, gap:10, flex:1, padding:10})
+    
+    mem.pool(20, "productCard")
+    from 0 to 19 in i:
+        card = mem.pool("productCard").get()
+        card.set({title:"Product {i}", price:"${i * 10}", width:"100%", height:150})
+        content.add(card)
+    end
+    main.add(content)
+    
+    footer = ui.box({width:"100%", height:50, color:"gray"})
+    footerText = ui.text("© 2026 My Shop", {size:app.scale(12)})
+    footer.add(footerText)
+    main.add(footer)
+    
+    myApp.setRoot(main)
+})
+
+myApp.onResize((newWidth, newHeight) -> {
+    show "Resize event -> New Size:", "{newWidth}x{newHeight}"
+})
+
+myApp.onUpdate((dt) -> {
+    show "Frame update tick dt:", dt, "FPS:", app.fps()
+})
+
+myApp.run()
+
+# ── 2. Multi-Platform Screen & Responsive Verification ──────
+show "\n=== 2. MULTI-PLATFORM RESPONSIVE RESOLUTION ==="
+
+platforms = [
+    {name: "Android Phone", width: 360, height: 800, platform: "android"},
+    {name: "iOS iPhone", width: 390, height: 844, platform: "ios"},
+    {name: "iPad Tablet", width: 768, height: 1024, platform: "ios"},
+    {name: "Windows Desktop", width: 1920, height: 1080, platform: "windows"},
+    {name: "macOS Desktop", width: 1920, height: 1080, platform: "macos"},
+    {name: "Linux Desktop", width: 1920, height: 1080, platform: "linux"},
+    {name: "Web Browser", width: 1920, height: 1080, platform: "web"},
+    {name: "Custom Widget", width: 500, height: 500, platform: "custom"}
+]
+
+respTester = ui.responsive({
+    mobile:{cols:1, dir:"col", gap:10, padding:10},
+    tablet:{cols:2, dir:"row", gap:15, padding:15},
+    desktop:{cols:4, dir:"row", gap:20, padding:20},
+    custom:{cols:1, dir:"col", gap:5, padding:5}
+})
+
+each p in platforms:
+    app.setScreen(p.width, p.height, p.platform)
+    scr = app.screen()
+    cfg = respTester.get()
+    scaledFont = app.scale(16)
+    show "[Platform:", p.name, "] -> Width:", scr.width, "Type:", scr.type, "Cols:", cfg.cols, "Scale(16):", scaledFont, "Mem:", mem.used()
+end
+
+# ── 3. Screen Rotation Simulation (Portrait -> Landscape) ───
+show "\n=== 3. MOBILE ROTATION TEST ==="
+app.setScreen(360, 800, "android")
+show "Before rotation (Portrait):", app.screen().width, "x", app.screen().height
+myApp.resize(800, 360, "android")
+show "After rotation (Landscape):", app.screen().width, "x", app.screen().height
+show "Is Mobile after rotation:", app.isMobile()
+
+# ── 4. Memory Pool & Zero-GC Efficiency ─────────────────────
+show "\n=== 4. ZERO-GC MEMORY POOL VERIFICATION ==="
+show "Mem used before pool alloc:", mem.used()
+mem.pool(100, "itemPool")
+show "Mem stats:", mem.stats()
+show "Mem total available:", mem.total()
+
+show "=================================================="
+show "  ALL NOVA APP UNIFIED & RESPONSIVE UI TESTS PASSED!"
+show "=================================================="

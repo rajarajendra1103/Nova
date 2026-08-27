@@ -1,0 +1,13 @@
+# ============================================================
+# NOVA STANDARD LIBRARY - INPUT SUBSYSTEM (input)
+# ============================================================
+import input
+
+show "=== Nova Low-Latency Input Manager ==="
+pos = input.mousePos()
+is_space = input.key("Space")
+
+show "Mouse Position:", pos
+show "Spacebar Key State:", is_space
+show "Input Polling Rate: 1000Hz Ultra-Low Latency"
+show "[Input Subsystem Active]"

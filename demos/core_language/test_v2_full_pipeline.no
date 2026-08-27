@@ -1,0 +1,83 @@
+# ============================================================
+# NOVA V2.0 - FULL PIPELINE & VISUALIZATION TEST
+# Testing: numpy (np), pandas (pd), chart (ch), viz
+# Zero `_` symbol - Clean camelCase API
+# ============================================================
+
+import numpy as np
+import pandas as pd
+import chart as ch
+import viz
+
+show "=== 1. TEST CHART (ch) ==="
+ch.line([1, 4, 9, 16])
+ch.bar(["A", "B", "C"], [10, 20, 15])
+ch.scatter([1, 2, 3], [1, 4, 9])
+ch.hist([1, 1, 2, 2, 2, 3, 3, 3, 3, 4])
+ch.pie([30, 40, 30], ["A", "B", "C"])
+
+p1 = ch.new("My Chart")
+p1.addLine([1, 2, 3], [1, 4, 9], {color: "blue", label: "growth"})
+p1.addBar(["A", "B"], [10, 20], {color: "red", label: "metrics"})
+p1.title("Combined Chart")
+p1.xLabel("Timeline")
+p1.yLabel("Metrics")
+p1.legend()
+p1.show()
+p1.save("test_chart.txt")
+show "Chart tests passed!"
+
+show ""
+show "=== 2. TEST VIZ (Seaborn Equivalent) ==="
+viz.heat([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+viz.box([1, 2, 3, 4, 5, 10, 20])
+viz.violin([1, 2, 3, 4, 5])
+viz.dist([1, 1, 2, 2, 2, 3, 3, 3, 3, 4])
+
+frame = pd.DF({
+    x: [1, 2, 3, 4, 5],
+    y: [1, 4, 9, 16, 25],
+    cat: ["A", "A", "B", "B", "C"]
+})
+viz.corr(frame)
+viz.scatter(frame.col("x"), frame.col("y"), {hue: frame.col("cat")})
+
+p2 = viz.new()
+p2.addHeat([[1, 2], [3, 4]], {title: "Heat Matrix"})
+p2.addBox([1, 2, 3, 4, 5], {title: "Distribution Box"})
+p2.show()
+p2.save("test_viz.txt")
+show "Viz tests passed!"
+
+show ""
+show "=== 3. COMBINED AI DATA PIPELINE (numpy + pandas + chart + viz) ==="
+# 1. Generate Raw Sensor Data with Numpy
+arr = np.range(1, 11)
+features = np.zeros([10, 2])
+from 0 to 9 in i:
+    val = arr[i]
+    features.set(i, 0, val)
+    features.set(i, 1, val * val)
+end
+
+# 2. Structure into DataFrame with Pandas
+df = pd.DF({
+    id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    step: arr.toList(),
+    score: [12.5, 18.0, 22.1, 35.0, 48.2, 51.0, 68.4, 75.2, 88.0, 99.5],
+    tier: ["Bronze", "Bronze", "Bronze", "Silver", "Silver", "Silver", "Gold", "Gold", "Gold", "Gold"]
+})
+show "Pipeline DataFrame:"
+show df
+
+# 3. Analyze & Group with Pandas
+grouped = df.groupBy("tier")
+show "Mean score by tier:"
+show grouped.mean()
+
+# 4. Visualize with Chart and Viz
+ch.line(df.col("score"), df.col("step"))
+viz.count(df.col("tier"))
+
+show ""
+show ">>> ALL V2.0 DATA & VISUALIZATION PIPELINES SUCCEEDED! <<<"

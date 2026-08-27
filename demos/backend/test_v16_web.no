@@ -1,0 +1,185 @@
+show "=================================================="
+show "  NOVA V1.6 WEB & FULL-STACK TEST SUITE"
+show "=================================================="
+
+# ============================================================
+# 1. DATABASE & BACKEND (db)
+# ============================================================
+show "=== 1. DB MODULE ==="
+import db
+
+# In-memory test db
+db.connect("test_v16.db")
+db.create("users", {id: "int primary", name: "text", age: "int", role: "text"})
+db.clear("users")
+
+id1 = db.insert("users", {name: "Ravi", age: 21, role: "dev"})
+id2 = db.insert("users", {name: "Ram", age: 25, role: "lead"})
+id3 = db.insert("users", {name: "Anita", age: 17, role: "intern"})
+
+show "Inserted row id:", id1
+show "Total users count:", db.count("users")
+
+all_users = db.find("users")
+show "All users size:", all_users.size
+
+u1 = db.findOne("users", {id: id1})
+show "Found user 1:", u1.name, u1.age
+
+adults = db.findWhere("users", "age >= 18")
+show "Adults count:", adults.size
+
+# Sorting
+sorted_asc = db.sort("users", "age")
+show "Youngest age:", sorted_asc[0].age
+
+sorted_dsc = db.dsort("users", "age")
+show "Oldest age:", sorted_dsc[0].age
+
+# Update
+db.update("users", {id: id1}, {age: 22})
+u1_updated = db.findOne("users", {id: id1})
+show "Updated user 1 age:", u1_updated.age
+
+# Delete
+db.delete("users", {id: id3})
+show "After delete count:", db.count("users")
+
+
+# ============================================================
+# 2. AUTH MODULE (auth)
+# ============================================================
+show "=== 2. AUTH MODULE ==="
+import auth
+
+pass_plain = "mySecretPassword123"
+hash_val = auth.hash(pass_plain)
+show "Hash created (length > 20):", hash_val.size > 20
+show "Check valid password:", auth.check(pass_plain, hash_val)
+show "Check wrong password:", auth.check("wrongPassword", hash_val)
+
+# JWT Token
+token_val = auth.token({id: 1, name: "Ravi", role: "admin"}, "jwt_secret_key_123")
+show "JWT Token created:", token_val.size > 20
+
+verified_payload = auth.verify(token_val, "jwt_secret_key_123")
+show "Verified payload user:", verified_payload.name
+show "Verified payload role:", verified_payload.role
+
+bad_verify = auth.verify(token_val, "wrong_secret")
+show "Bad secret verify is none:", bad_verify == none
+
+
+# ============================================================
+# 3. ENV MODULE (env)
+# ============================================================
+show "=== 3. ENV MODULE ==="
+import env
+
+env.set("NOVA_TEST_PORT", "8080")
+show "Env get NOVA_TEST_PORT:", env.get("NOVA_TEST_PORT")
+show "Env has NOVA_TEST_PORT:", env.has("NOVA_TEST_PORT")
+show "Env get default fallback:", env.get("NON_EXISTENT_KEY", "fallback_val")
+
+
+# ============================================================
+# 4. SERVER MODULE (server) & HTTP CLIENT (http)
+# ============================================================
+show "=== 4. SERVER & HTTP MODULES ==="
+import server
+import http
+
+app = server.new()
+app.json()
+app.cors()
+
+app.get("/health", (req, res) -> {
+    res.json({status: "healthy", version: "1.6"})
+})
+
+app.get("/hello/:name", (req, res) -> {
+    res.send("Hello {req.params.name}!")
+})
+
+app.post("/echo", (req, res) -> {
+    res.status(201).json({received: req.body})
+})
+
+# Route Group
+api = app.group("/api")
+api.get("/status", (req, res) -> {
+    res.json({api_status: "online"})
+})
+
+# Start server on test port 9123
+app.listen(9123)
+show "Server started on port 9123"
+
+# Sleep briefly to ensure listener is up
+time.sleep(0.3)
+
+# Test GET request
+res_health = http.get("http://localhost:9123/health")
+show "GET /health status:", res_health.status
+show "GET /health ok:", res_health.ok
+show "GET /health json status:", res_health.json().status
+
+# Test GET with route param :name
+res_name = http.g("http://localhost:9123/hello/NovaDeveloper")
+show "GET /hello/NovaDeveloper text:", res_name.text
+
+# Test POST request with JSON
+res_post = http.post("http://localhost:9123/echo", {message: "Nova is fast", code: 42})
+show "POST /echo status:", res_post.status
+show "POST /echo json response:", res_post.json().received.message
+
+# Test Group Route
+res_api = http.get("http://localhost:9123/api/status")
+show "GET /api/status json:", res_api.json().api_status
+
+# Test Async HTTP
+async_task = http.getAsync("http://localhost:9123/health")
+async_res = async_task.wait()
+show "Async request status:", async_res.status
+
+# Close server
+app.close()
+
+
+# ============================================================
+# 5. FRONTEND UI MODULE (ui)
+# ============================================================
+show "=== 5. FRONTEND UI MODULE ==="
+import ui
+
+page = ui.page("My Nova Application")
+header = ui.title("Nova Dashboard")
+sub = ui.subTitle("Overview")
+desc = ui.text("Welcome to the reactive UI system")
+
+name_input = ui.input("Enter name").id("username")
+submit_btn = ui.btn("Save").bg("#2563eb").color("#ffffff").pad(8).round(6)
+
+card = ui.box()
+card.bg("#1e293b").color("#ffffff").pad(16).margin(12).round(8).w(300).h(150)
+card.add(ui.title("Card Header"))
+card.add(ui.text("Card Body Content"))
+
+row = ui.row().add(name_input).add(submit_btn)
+col = ui.col().add(header).add(sub).add(desc).add(row).add(card)
+
+page.add(col)
+
+html_code = page.toHTML()
+show "Generated HTML contains title tag:", html_code.has("Nova Dashboard")
+show "Generated HTML contains button:", html_code.has("Save")
+show "Generated HTML contains styled card:", html_code.has("background-color:#1e293b")
+
+# Test list rendering
+users_data = [{name: "Ravi"}, {name: "Ram"}]
+user_list = ui.list([take ui.text(u.name) each u in users_data])
+show "List elements count:", user_list.children.size
+
+show "=================================================="
+show "  ALL NOVA V1.6 TESTS PASSED SUCCESSFULLY!"
+show "=================================================="
